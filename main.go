@@ -24,17 +24,13 @@ func newHost(listen multiaddr.Multiaddr) host.Host {
 	if err != nil {
 		panic(err)
 	}
-	// print the node's listening addresses
-	fmt.Println("Listen addresses:", h.Addrs())
 	return h
 }
 
 func main() {
-	fmt.Println("Jim1", len(os.Args))
 	if len(os.Args) < 2 {
 		panic("Need multiaddr")
 	}
-	fmt.Println("Jim2", os.Args[1])
 	addr, err := multiaddr.NewMultiaddr(os.Args[1])
 	if err != nil {
 		panic(err)
@@ -44,9 +40,8 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Connecting to:", os.Args[1])
-	fmt.Println("Peer:", peer.ID)
 
-	m2, _ := multiaddr.NewMultiaddr("/ip4/127.0.0.1/tcp/10001")
+	m2, _ := multiaddr.NewMultiaddr("/ip4/127.0.0.1/tcp/0")
 	clientHost := newHost(m2)
 	defer clientHost.Close()
 
@@ -66,7 +61,6 @@ func main() {
 	tr := &http.Transport{}
 	tr.RegisterProtocol("libp2p", p2phttp.NewTransport(clientHost))
 	client := &http.Client{Transport: tr}
-	fmt.Println("Jim3:", "libp2p://" + peer.ID.String())
 	res, err := client.Get("libp2p://" + peer.ID.String())
 	if err != nil {
 		panic(err)
